@@ -1,0 +1,23 @@
+# API Tests for Auth Routes
+
+## Environment Variables
+@baseUrl = http://localhost:3000
+
+### Register a new user
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "testuser@gmail.com",
+    "password": "testpassword"
+}
+
+### Login a user
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@gmail.com",
+    "password": "testpassword"
+}
