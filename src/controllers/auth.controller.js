@@ -130,4 +130,28 @@ const logoutUserController = async (req, res) => {
   res.status(200).json({ message: "User logged out successfully" });
 };
 
-export { registerUserController, loginUserController, logoutUserController };
+/**
+ * @name getMeController
+ * @description Controller to fetch the authenticated user's details
+ * @route GET /api/v1/auth/getme
+ * @access Private
+ */
+const getMeController = async (req, res) => {
+  const user = await UserModel.findById(req.user.id);
+
+  res.status(200).json({
+    message: "User details fetched successfully",
+    user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    },
+  });
+};
+
+export {
+  registerUserController,
+  loginUserController,
+  logoutUserController,
+  getMeController,
+};

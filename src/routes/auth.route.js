@@ -1,5 +1,6 @@
 import express from "express";
 import * as authController from "../controllers/auth.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
@@ -26,5 +27,13 @@ router.post("/login", authController.loginUserController);
  * @access Public
  */
 router.get("/logout", authController.logoutUserController);
+
+/**
+ * @name getMeRoute
+ * @description Route to get the authenticated user's profile
+ * @route GET /api/v1/auth/getme
+ * @access Private
+ */
+router.get("/getme", authMiddleware, authController.getMeController);
 
 export default router;
