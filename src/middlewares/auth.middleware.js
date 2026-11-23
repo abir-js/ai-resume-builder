@@ -1,11 +1,20 @@
 import jwt from "jsonwebtoken";
+import BlacklistTokenModel from "../models/blacklist.model.js";
 
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({
       message: "No token provided",
+    });
+  }
+
+  const isTokenBlacklisted = await BlacklistTokenModel.findOne({ token });
+
+  if (isTokenBlacklisted) {
+    return res.status(401).json({
+      message: "Token has been expired, please log in again",
     });
   }
 
@@ -16,7 +25,7 @@ function authMiddleware(req, res, next) {
 
     next();
   } catch (err) {
-    return res.staus(401).json({
+    return res.status(401).json({
       message: "Invalid token, please log in again",
     });
   }
