@@ -21,3 +21,6 @@ Content-Type: application/json
     "email": "testuser@gmail.com",
     "password": "testpassword"
 }
+
+### Logout a user
+GET {{baseUrl}}/api/v1/auth/logout

@@ -1,5 +1,5 @@
 import express from "express";
-import authController from "../controllers/auth.controller.js";
+import * as authController from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
@@ -18,5 +18,13 @@ router.post("/register", authController.registerUserController);
  * @access Public
  */
 router.post("/login", authController.loginUserController);
+
+/**
+ * @name logoutUserRoute
+ * @description Route to logout a user by clearing the authentication token
+ * @route POST /api/v1/auth/logout
+ * @access Public
+ */
+router.get("/logout", authController.logoutUserController);
 
 export default router;

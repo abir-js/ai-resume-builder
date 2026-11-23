@@ -1,7 +1,9 @@
 import UserModel from "../models/user.model.js";
+import BlacklistTokenModel from "../models/blacklist.model.js";
+
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import 'dotenv/config';
+import "dotenv/config";
 
 /**
  * @name registerUserController
@@ -87,15 +89,13 @@ const loginUserController = async (req, res) => {
     return res.status(400).json({ message: "Invalid credentials" });
   }
 
-  const token = jwt.sign(
-    { id: user._id},
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" },
-  );
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000,
   });
@@ -111,7 +111,23 @@ const loginUserController = async (req, res) => {
   });
 };
 
-export default {
-  registerUserController,
-  loginUserController,
+/**
+ * @name logoutUserController
+ * @description Controller to handle user logout
+ * @route POST /api/v1/auth/logout
+ * @access Public
+ */
+const logoutUserController = async (req, res) => {
+  const token = req.cookies.token;
+  // if (!token) {
+  //   return res.status(400).json({ message: "No token found" });
+  // }
+
+  const blacklistedToken = await BlacklistTokenModel.create({ token });
+
+  res.clearCookie("token");
+
+  res.status(200).json({ message: "User logged out successfully" });
 };
+
+export { registerUserController, loginUserController, logoutUserController };
